@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fokus Flow</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Canvas Confetti Library für die Belohnungs-Folie -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #fbf7f5 0%, #f0f4f8 50%, #f5eef8 100%);
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: #ffffff;
+      --text-main: #334155;
+      --text-muted: #64748b;
+
+      --pastel-purple: #e0e7ff;
+      --pastel-purple-dark: #4338ca;
+      --pastel-green: #dcfce7;
+      --pastel-green-dark: #15803d;
+      --pastel-rose: #ffe4e6;
+      --pastel-rose-dark: #be123c;
+      --pastel-amber: #fef3c7;
+      --pastel-amber-dark: #b45309;
+      --pastel-blue: #e0f2fe;
+      --pastel-blue-dark: #0369a1;
+
+      --shadow-soft: 0 20px 40px -15px rgba(148, 163, 184, 0.25);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 720px;
+      position: relative;
+    }
+
+    /* PowerPoint Morph Effect */
+    .step {
+      opacity: 0;
+      transform: scale(0.92) translateY(30px);
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      top: 0;
+      left: 0;
+      max-height: 0;
+      overflow: hidden;
+      visibility: hidden;
+      transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  visibility 0.6s;
+    }
+
+    .step.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+      position: relative;
+      max-height: none;
+      overflow: visible;
+      visibility: visible;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* Elements & Typography */
+    h1 { font-size: 2.2rem; font-weight: 700; color: #1e293b; margin-bottom: 12px; }
+    h2 { font-size: 1.5rem; font-weight: 600; color: #334155; margin-bottom: 16px; }
+    p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 24px; }
+
+    /* Buttons */
+    .btn {
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .btn:active { transform: translateY(0); }
+
+    .btn-main { background: var(--pastel-purple); color: var(--pastel-purple-dark); }
+    .btn-success { background: var(--pastel-green); color: var(--pastel-green-dark); }
+    .btn-warning { background: var(--pastel-amber); color: var(--pastel-amber-dark); }
+    .btn-rose { background: var(--pastel-rose); color: var(--pastel-rose-dark); }
+    .btn-secondary { background: #f1f5f9; color: #475569; }
+
+    /* Custom Checkboxes */
+    .custom-checklist { list-style: none; margin-bottom: 28px; }
+    .check-item {
+      display: flex;
+      align-items: center;
+      background: #ffffff;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      cursor: pointer;
+      border: 1px solid #f1f5f9;
+      transition: all 0.2s ease;
+    }
+
+    .check-item:hover { border-color: var(--pastel-purple); }
+
+    .check-box {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      margin-right: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .check-item.checked .check-box {
+      background: var(--pastel-green-dark);
+      border-color: var(--pastel-green-dark);
+    }
+
+    .check-box::after {
+      content: '✓';
+      color: white;
+      font-size: 14px;
+      display: none;
+    }
+
+    .check-item.checked .check-box::after { display: block; }
+    .check-item.checked span { text-decoration: line-through; color: #94a3b8; }
+
+    /* Timer Display */
+    .timer-display {
+      font-size: 5rem;
+      font-weight: 700;
+      text-align: center;
+      color: #1e293b;
+      margin: 20px 0;
+      letter-spacing: -2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* To-Do & Fächer System */
+    .todo-input-group { display: flex; gap: 10px; margin-bottom: 16px; }
+    .todo-input {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1px solid #e2e8f0;
+      outline: none;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .todo-input:focus { border-color: var(--pastel-purple-dark); }
+
+    .todo-list { list-style: none; margin-bottom: 24px; }
+    .todo-item {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #f1f5f9;
+      font-size: 0.95rem;
+    }
+
+    .faecher-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .fach-box {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      border: 1px solid #f1f5f9;
+    }
+    .fach-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+
+    .arrow-btn {
+      background: var(--pastel-blue);
+      color: var(--pastel-blue-dark);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .arrow-btn:hover { background: var(--pastel-purple); color: var(--pastel-purple-dark); }
+
+    /* Break Step Display */
+    .step-card-active {
+      background: #ffffff;
+      border-left: 4px solid var(--pastel-amber-dark);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- SCHRITT 1: WILLKOMMEN -->
+    <div class="step active" id="step-1">
+      <div class="card" style="text-align: center; padding: 60px 36px;">
+        <span style="font-size: 3rem; display: block; margin-bottom: 10px;">🍃</span>
+        <h1>Fokus Flow</h1>
+        <p>Ein Schritt nach dem anderen. Du musst an nichts weiter denken.</p>
+        <button class="btn btn-main" onclick="goToStep(2)">
+          Anfangen mit dem Lernen 📖
+        </button>
+      </div>
+    </div>
+
+    <!-- SCHRITT 2: VORBEREITUNG -->
+    <div class="step" id="step-2">
+      <div class="card">
+        <h2>🌱 Schreibtisch vorbereiten</h2>
+        <p>Hake ab, was du bereitgestellt hast. Erst dann geht es weiter.</p>
+
+        <ul class="custom-checklist">
+          <li class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>Fenster kurz aufgemacht (Frische Luft)</span>
+          </li>
+          <li class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>Handy ausser Reichweite und ausser Hörbereich</span>
+          </li>
+          <li class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>Ein großes Glas Wasser steht bereit</span>
+          </li>
+          <li class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box"></div>
+            <span>Nur das Lernmaterial für JETZT auf dem Tisch</span>
+          </li>
+        </ul>
+
+        <div style="display: flex; justify-content: space-between;">
+          <button class="btn btn-secondary" onclick="goToStep(1)">Zurück</button>
+          <button class="btn btn-success" onclick="goToStep(3)">Bereit! Weiter zum Lernen ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 3: LERNEN & FÄCHER SYSTEM -->
+    <div class="step" id="step-3">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>🎯 Deep Learning Block</h2>
+          <button class="btn btn-main" style="font-size: 0.85rem; padding: 8px 14px;" onclick="openSpotifyApp()">
+            🎹 Spotify öffnen
+          </button>
+        </div>
+
+        <div class="timer-display" id="study-timer">25:00</div>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 30px;">
+          <button class="btn btn-main" id="study-start-btn" onclick="toggleStudyTimer()">▶ Starten</button>
+          <button class="btn btn-warning" onclick="pauseStudyTimer()">⏸ Kurze Unterbrechung</button>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;">
+
+        <h2>🧠 Brain-Dump (Gedanken abladen)</h2>
+        <p style="font-size: 0.9rem; margin-bottom: 12px;">Schreibe störende Gedanken auf, damit dein Kopf frei bleibt.</p>
+        <div class="todo-input-group">
+          <input type="text" id="brain-input" class="todo-input" placeholder="Z. B. Mama anrufen, Thema X nachschlagen...">
+          <button class="btn btn-secondary" onclick="addBrainItem()">Hinzufügen</button>
+        </div>
+        <ul class="todo-list" id="brain-list"></ul>
+
+        <h2>📂 3-Fächer-System</h2>
+        <div class="todo-input-group">
+          <input type="text" id="task-input" class="todo-input" placeholder="Neue Lernaufgabe eingeben...">
+          <button class="btn btn-main" onclick="addTask()">+ In Fach 2</button>
+        </div>
+
+        <div class="faecher-grid">
+          <div class="fach-box">
+            <div class="fach-title" style="color: var(--pastel-amber-dark);">Fach 2 (To-Do)</div>
+            <div id="fach2-list"></div>
+          </div>
+          <div class="fach-box">
+            <div class="fach-title" style="color: var(--pastel-green-dark);">Fach 3 (Repeat)</div>
+            <div id="fach3-list"></div>
+          </div>
+          <div class="fach-box">
+            <div class="fach-title" style="color: var(--pastel-blue-dark);">🎒 Schulthek</div>
+            <div id="thek-list"></div>
+          </div>
+        </div>
+
+        <div style="text-align: right; margin-top: 20px;">
+          <button class="btn btn-success" onclick="startBreakPhase()">Block beenden & zur Pause ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 4: PAUSE -->
+    <div class="step" id="step-4">
+      <div class="card">
+        <h2>🧘 Pausen-Zeit</h2>
+        <p>Entspanne deine Augen und deinen Kopf.</p>
+
+        <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
+          <button class="btn btn-secondary" onclick="setBreakTimer(5)">5 Min</button>
+          <button class="btn btn-secondary" onclick="setBreakTimer(10)">10 Min</button>
+        </div>
+
+        <div class="timer-display" id="break-timer">05:00</div>
+
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 24px;">
+          <button class="btn btn-main" id="break-start-btn" onclick="toggleBreakTimer()">▶ Start Pause</button>
+          <button class="btn btn-rose" onclick="emergencyStop()">🛑 Notfall-Stopp</button>
+        </div>
+
+        <div class="step-card-active">
+          <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Aktuelle Pausen-Aufgabe:</div>
+          <div id="break-instruction" style="font-size: 1.1rem; font-weight: 600; margin-top: 4px;">1. Stehe auf und strecke dich ausgiebig.</div>
+        </div>
+        <button class="btn btn-secondary" style="width: 100%; margin-bottom: 24px;" onclick="nextBreakInstruction()">Nächste Pausen-Aufgabe ➔</button>
+
+        <div style="display: flex; justify-content: space-between;">
+          <button class="btn btn-rose" onclick="triggerCelebration()">🏁 Lernen komplett beenden</button>
+          <button class="btn btn-success" onclick="startNextStudyBlock()">Nächsten Lernblock starten ➔</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHRITT 5: CELEBRATION / BELOHNUNG (KONFETTI) -->
+    <div class="step" id="step-5">
+      <div class="card" style="text-align: center; padding: 50px 36px;">
+        <span style="font-size: 3.5rem; display: block; margin-bottom: 10px;">🎉</span>
+        <h2>Hervorragende Arbeit!</h2>
+        <p>Du hast deinen Lernblock erfolgreich gemeistert. Zeit, stolz auf dich zu sein!</p>
+
+        <div style="background: #f0fdf400; border: 1px solid #bbf7d000; padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px;">
+          <p style="font-size: 1.1rem; color: #163465fe; font-weight: 600;" id="session-count-text">🔥 Abgeschlossene Sessions insgesamt: 0</p>
+          <p style="font-size: 0.9rem; color: #163465c7; margin-top: 4px;">Gönn dir eine wohlverdiente Erholung.</p>
+        </div>
+
+        <button class="btn btn-main" style="width: 100%;" onclick="finishSessionToStart()">🔄 Neue Session starten</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Navigation (Morph Transitions)
+    function goToStep(stepNumber) {
+      document.querySelectorAll('.step').forEach(step => {
+        step.classList.remove('active');
+      });
+      document.getElementById(`step-${stepNumber}`).classList.add('active');
+    }
+
+    // Checkbox Logic
+    function toggleCheck(element) {
+      element.classList.toggle('checked');
+    }
+
+    // WEB AUDIO API - Chinese Gong Effect with Echo
+    function playGongSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioContext();
+
+        const freqs = [130.81, 196.00, 261.63, 392.00, 523.25];
+
+        freqs.forEach((freq, index) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = index % 2 === 0 ? 'sine' : 'triangle';
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(freq * 0.99, ctx.currentTime + 4.0);
+
+          gain.gain.setValueAtTime(0.15, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 4.5);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start();
+          osc.stop(ctx.currentTime + 4.5);
+        });
+      } catch(e) {
+        console.log("Audio play prevented");
+      }
+    }
+
+    // SPOTIFY OPENER
+    function openSpotifyApp() {
+      window.location.href = "spotify:";
+    }
+
+    // STEP 3: STUDY TIMER
+    let studyTime = 25 * 60;
+    let studyInterval = null;
+    let studyRunning = false;
+    let studyEndTime = null;
+
+    function updateStudyDisplay() {
+      const m = Math.floor(studyTime / 60);
+      const s = studyTime % 60;
+      document.getElementById('study-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function resetStudyTimer() {
+      clearInterval(studyInterval);
+      studyRunning = false;
+      studyTime = 25 * 60;
+      document.getElementById('study-start-btn').textContent = "▶ Starten";
+      updateStudyDisplay();
+    }
+
+    function toggleStudyTimer() {
+      const btn = document.getElementById('study-start-btn');
+      if (studyRunning) {
+        clearInterval(studyInterval);
+        studyRunning = false;
+        btn.textContent = "▶ Weiter";
+      } else {
+        studyRunning = true;
+        btn.textContent = "⏸ Pause";
+        studyEndTime = Date.now() + (studyTime * 1000);
+
+        studyInterval = setInterval(() => {
+          const diff = Math.round((studyEndTime - Date.now()) / 1000);
+          if (diff > 0) {
+            studyTime = diff;
+            updateStudyDisplay();
+          } else {
+            studyTime = 0;
+            updateStudyDisplay();
+            clearInterval(studyInterval);
+            studyRunning = false;
+            startBreakPhase();
+          }
+        }, 500);
+      }
+    }
+
+    function pauseStudyTimer() {
+      if (studyRunning) toggleStudyTimer();
+    }
+
+    // BRAIN DUMP LOGIC WITH LOCALSTORAGE PERSISTENCE
+    let brainItems = JSON.parse(localStorage.getItem('fokus_brain_items') || '[]');
+
+    function saveBrainItems() {
+      localStorage.setItem('fokus_brain_items', JSON.stringify(brainItems));
+    }
+
+    function renderBrainItems() {
+      const list = document.getElementById('brain-list');
+      list.innerHTML = '';
+      brainItems.forEach((item, index) => {
+        const li = document.createElement('li');
+        li.className = 'todo-item';
+        li.innerHTML = `<span>${item}</span> <button class="arrow-btn" style="background: var(--pastel-rose); color: var(--pastel-rose-dark);" onclick="removeBrainItem(${index})">✕</button>`;
+        list.appendChild(li);
+      });
+    }
+
+    function addBrainItem() {
+      const input = document.getElementById('brain-input');
+      if (!input.value.trim()) return;
+      brainItems.push(input.value.trim());
+      saveBrainItems();
+      renderBrainItems();
+      input.value = '';
+    }
+
+    function removeBrainItem(index) {
+      brainItems.splice(index, 1);
+      saveBrainItems();
+      renderBrainItems();
+    }
+
+    // 3-FÄCHER LOGIC WITH LOCALSTORAGE PERSISTENCE
+    let tasks = JSON.parse(localStorage.getItem('fokus_tasks') || '[]');
+
+    function saveTasks() {
+      localStorage.setItem('fokus_tasks', JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const input = document.getElementById('task-input');
+      if (!input.value.trim()) return;
+      tasks.push({ id: Date.now(), text: input.value.trim(), stage: 2 });
+      input.value = '';
+      saveTasks();
+      renderTasks();
+    }
+
+    function moveTask(id, targetStage) {
+      tasks = tasks.map(t => t.id === id ? {...t, stage: targetStage} : t);
+      saveTasks();
+      renderTasks();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      saveTasks();
+      renderTasks();
+    }
+
+    function renderTasks() {
+      const f2 = document.getElementById('fach2-list');
+      const f3 = document.getElementById('fach3-list');
+      const thek = document.getElementById('thek-list');
+      f2.innerHTML = ''; f3.innerHTML = ''; thek.innerHTML = '';
+
+      tasks.forEach(t => {
+        const item = document.createElement('div');
+        item.className = 'todo-item';
+        if (t.stage === 2) {
+          item.innerHTML = `<span>${t.text}</span> <button class="arrow-btn" onclick="moveTask(${t.id}, 3)">➔</button>`;
+          f2.appendChild(item);
+        } else if (t.stage === 3) {
+          item.innerHTML = `<span>${t.text}</span> <button class="arrow-btn" onclick="moveTask(${t.id}, 4)">➔</button>`;
+          f3.appendChild(item);
+        } else {
+          item.innerHTML = `<span><s>${t.text}</s></span> <button class="arrow-btn" style="background: var(--pastel-rose); color: var(--pastel-rose-dark);" onclick="deleteTask(${t.id})">✕</button>`;
+          thek.appendChild(item);
+        }
+      });
+    }
+
+    // STEP 4: BREAK LOGIC
+    let breakTime = 5 * 60;
+    let breakInterval = null;
+    let breakRunning = false;
+    const breakInstructions = [
+      "1. Stehe auf und strecke dich ausgiebig.",
+      "2. Trinke ein volles Glas kaltes Wasser.",
+      "3. Schau aus dem Fenster auf einen fernen Punkt (Augen entspannen).",
+      "4. Atme 3x tief in den Bauch ein und langsam aus."
+    ];
+    let currentInstruction = 0;
+
+    function startBreakPhase() {
+      pauseStudyTimer();
+      playGongSound();
+      setBreakTimer(5);
+      goToStep(4);
+    }
+
+    function setBreakTimer(mins) {
+      clearInterval(breakInterval);
+      breakRunning = false;
+      document.getElementById('break-start-btn').textContent = "▶ Start Pause";
+      breakTime = mins * 60;
+      updateBreakDisplay();
+    }
+
+    function updateBreakDisplay() {
+      const m = Math.floor(breakTime / 60);
+      const s = breakTime % 60;
+      document.getElementById('break-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function toggleBreakTimer() {
+      const btn = document.getElementById('break-start-btn');
+      if (breakRunning) {
+        clearInterval(breakInterval);
+        breakRunning = false;
+        btn.textContent = "▶ Weiter";
+      } else {
+        breakRunning = true;
+        btn.textContent = "⏸ Pause";
+        breakInterval = setInterval(() => {
+          if (breakTime > 0) {
+            breakTime--;
+            updateBreakDisplay();
+          } else {
+            clearInterval(breakInterval);
+            breakRunning = false;
+            playGongSound();
+            alert("Die Pause ist vorbei! Zeit für den nächsten Fokus-Block.");
+          }
+        }, 1000);
+      }
+    }
+
+    function nextBreakInstruction() {
+      currentInstruction = (currentInstruction + 1) % breakInstructions.length;
+      document.getElementById('break-instruction').textContent = breakInstructions[currentInstruction];
+    }
+
+    function emergencyStop() {
+      clearInterval(breakInterval);
+      breakRunning = false;
+      document.getElementById('break-start-btn').textContent = "▶ Start Pause";
+      alert("Notfall-Stopp aktiviert. Atme durch, die Zeit steht.");
+    }
+
+    function startNextStudyBlock() {
+      resetStudyTimer();
+      setBreakTimer(5);
+      goToStep(3);
+    }
+
+    // STEP 5: CELEBRATION & KONFETTI
+    function triggerCelebration() {
+      clearInterval(studyInterval);
+      clearInterval(breakInterval);
+
+      let totalSessions = parseInt(localStorage.getItem('fokus_sessions_count') || '0') + 1;
+      localStorage.setItem('fokus_sessions_count', totalSessions);
+
+      document.getElementById('session-count-text').innerHTML = `🔥 Abgeschlossene Sessions insgesamt: <strong>${totalSessions}</strong>`;
+
+      goToStep(5);
+
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 160,
+          spread: 100,
+          origin: { x: 0.5, y: 0.5 }
+        });
+      }
+    }
+
+    function finishSessionToStart() {
+      resetStudyTimer();
+      setBreakTimer(5);
+      goToStep(1);
+    }
+
+    // INITIALISIERUNG
+    updateStudyDisplay();
+    updateBreakDisplay();
+    renderBrainItems();
+    renderTasks();
+  </script>
+</body>
+</html>
