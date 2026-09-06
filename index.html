@@ -298,9 +298,6 @@
       <div class="card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <h2>🎯 Deep Learning Block</h2>
-          <button class="btn btn-main" style="font-size: 0.85rem; padding: 8px 14px;" onclick="openSpotifyApp()">
-            🎹 Spotify öffnen
-          </button>
         </div>
 
         <div class="timer-display" id="study-timer">25:00</div>
@@ -438,11 +435,6 @@
       } catch(e) {
         console.log("Audio play prevented");
       }
-    }
-
-    // SPOTIFY OPENER
-    function openSpotifyApp() {
-      window.location.href = "spotify:";
     }
 
     // STEP 3: STUDY TIMER
@@ -586,8 +578,7 @@
     const breakInstructions = [
       "1. Stehe auf und strecke dich ausgiebig.",
       "2. Trinke ein volles Glas kaltes Wasser.",
-      "3. Schau aus dem Fenster auf einen fernen Punkt (Augen entspannen).",
-      "4. Atme 3x tief in den Bauch ein und langsam aus."
+      "3. Halte einen Luftballon in der Luft, ohne dass er den Boden berührt."
     ];
     let currentInstruction = 0;
 
