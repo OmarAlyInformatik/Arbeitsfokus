@@ -9,7 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Canvas Confetti Library für die Belohnungs-Folie -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
@@ -57,7 +56,6 @@
       position: relative;
     }
 
-    /* PowerPoint Morph Effect */
     .step {
       opacity: 0;
       transform: scale(0.92) translateY(30px);
@@ -93,12 +91,10 @@
       box-shadow: var(--shadow-soft);
     }
 
-    /* Elements & Typography */
     h1 { font-size: 2.2rem; font-weight: 700; color: #1e293b; margin-bottom: 12px; }
     h2 { font-size: 1.5rem; font-weight: 600; color: #334155; margin-bottom: 16px; }
     p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 24px; }
 
-    /* Buttons */
     .btn {
       font-family: inherit;
       font-size: 1.05rem;
@@ -124,7 +120,6 @@
     .btn-rose { background: var(--pastel-rose); color: var(--pastel-rose-dark); }
     .btn-secondary { background: #f1f5f9; color: #475569; }
 
-    /* Custom Checkboxes */
     .custom-checklist { list-style: none; margin-bottom: 28px; }
     .check-item {
       display: flex;
@@ -168,7 +163,6 @@
     .check-item.checked .check-box::after { display: block; }
     .check-item.checked span { text-decoration: line-through; color: #94a3b8; }
 
-    /* Timer Display */
     .timer-display {
       font-size: 5rem;
       font-weight: 700;
@@ -179,7 +173,6 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* To-Do & Fächer System */
     .todo-input-group { display: flex; gap: 10px; margin-bottom: 16px; }
     .todo-input {
       flex: 1;
@@ -235,7 +228,6 @@
     }
     .arrow-btn:hover { background: var(--pastel-purple); color: var(--pastel-purple-dark); }
 
-    /* Break Step Display */
     .step-card-active {
       background: #ffffff;
       border-left: 4px solid var(--pastel-amber-dark);
@@ -243,49 +235,59 @@
       border-radius: var(--radius-md);
       margin-bottom: 20px;
     }
+
+    /* DIREKTER GEMINI LINK BUTTON */
+    .gemini-link-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      color: white;
+      text-decoration: none;
+      padding: 14px 22px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .gemini-link-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(124, 58, 237, 0.6), 0 0 20px rgba(37, 99, 235, 0.4);
+      letter-spacing: 0.5px;
+    }
   </style>
 </head>
 <body>
 
   <div class="app-container">
 
-    <!-- SCHRITT 1: WILLKOMMEN -->
+    <!-- SCHRITT 1 -->
     <div class="step active" id="step-1">
       <div class="card" style="text-align: center; padding: 60px 36px;">
         <span style="font-size: 3rem; display: block; margin-bottom: 10px;">🍃</span>
         <h1>Fokus Flow</h1>
         <p>Ein Schritt nach dem anderen. Du musst an nichts weiter denken.</p>
-        <button class="btn btn-main" onclick="goToStep(2)">
-          Anfangen mit dem Lernen 📖
-        </button>
+        <button class="btn btn-main" onclick="goToStep(2)">Anfangen mit dem Lernen 📖</button>
       </div>
     </div>
 
-    <!-- SCHRITT 2: VORBEREITUNG -->
+    <!-- SCHRITT 2 -->
     <div class="step" id="step-2">
       <div class="card">
         <h2>🌱 Schreibtisch vorbereiten</h2>
         <p>Hake ab, was du bereitgestellt hast. Erst dann geht es weiter.</p>
-
         <ul class="custom-checklist">
-          <li class="check-item" onclick="toggleCheck(this)">
-            <div class="check-box"></div>
-            <span>Fenster kurz aufgemacht (Frische Luft)</span>
-          </li>
-          <li class="check-item" onclick="toggleCheck(this)">
-            <div class="check-box"></div>
-            <span>Handy ausser Reichweite und ausser Hörbereich</span>
-          </li>
-          <li class="check-item" onclick="toggleCheck(this)">
-            <div class="check-box"></div>
-            <span>Ein großes Glas Wasser steht bereit</span>
-          </li>
-          <li class="check-item" onclick="toggleCheck(this)">
-            <div class="check-box"></div>
-            <span>Nur das Lernmaterial für JETZT auf dem Tisch</span>
-          </li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Fenster kurz aufgemacht (Frische Luft)</span></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Handy ausser Reichweite und ausser Hörbereich</span></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Ein großes Glas Wasser steht bereit</span></li>
+          <li class="check-item" onclick="toggleCheck(this)"><div class="check-box"></div><span>Nur das Lernmaterial für JETZT auf dem Tisch</span></li>
         </ul>
-
         <div style="display: flex; justify-content: space-between;">
           <button class="btn btn-secondary" onclick="goToStep(1)">Zurück</button>
           <button class="btn btn-success" onclick="goToStep(3)">Bereit! Weiter zum Lernen ➔</button>
@@ -293,81 +295,56 @@
       </div>
     </div>
 
-    <!-- SCHRITT 3: LERNEN & FÄCHER SYSTEM -->
+    <!-- SCHRITT 3 -->
     <div class="step" id="step-3">
       <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-          <h2>🎯 Deep Learning Block</h2>
-        </div>
-
+        <h2>🎯 Deep Learning Block</h2>
         <div class="timer-display" id="study-timer">25:00</div>
-
         <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 30px;">
           <button class="btn btn-main" id="study-start-btn" onclick="toggleStudyTimer()">▶ Starten</button>
           <button class="btn btn-warning" onclick="pauseStudyTimer()">⏸ Kurze Unterbrechung</button>
         </div>
-
         <hr style="border: none; border-top: 1px solid #f1f5f9; margin: 24px 0;">
-
         <h2>🧠 Brain-Dump (Gedanken abladen)</h2>
-        <p style="font-size: 0.9rem; margin-bottom: 12px;">Schreibe störende Gedanken auf, damit dein Kopf frei bleibt.</p>
         <div class="todo-input-group">
-          <input type="text" id="brain-input" class="todo-input" placeholder="Z. B. Mama anrufen, Thema X nachschlagen...">
+          <input type="text" id="brain-input" class="todo-input" placeholder="Z. B. Mama anrufen...">
           <button class="btn btn-secondary" onclick="addBrainItem()">Hinzufügen</button>
         </div>
         <ul class="todo-list" id="brain-list"></ul>
-
         <h2>📂 3-Fächer-System</h2>
         <div class="todo-input-group">
           <input type="text" id="task-input" class="todo-input" placeholder="Neue Lernaufgabe eingeben...">
           <button class="btn btn-main" onclick="addTask()">+ In Fach 2</button>
         </div>
-
         <div class="faecher-grid">
-          <div class="fach-box">
-            <div class="fach-title" style="color: var(--pastel-amber-dark);">Fach 2 (To-Do)</div>
-            <div id="fach2-list"></div>
-          </div>
-          <div class="fach-box">
-            <div class="fach-title" style="color: var(--pastel-green-dark);">Fach 3 (Repeat)</div>
-            <div id="fach3-list"></div>
-          </div>
-          <div class="fach-box">
-            <div class="fach-title" style="color: var(--pastel-blue-dark);">🎒 Schulthek</div>
-            <div id="thek-list"></div>
-          </div>
+          <div class="fach-box"><div class="fach-title" style="color: var(--pastel-amber-dark);">Fach 2 (To-Do)</div><div id="fach2-list"></div></div>
+          <div class="fach-box"><div class="fach-title" style="color: var(--pastel-green-dark);">Fach 3 (Repeat)</div><div id="fach3-list"></div></div>
+          <div class="fach-box"><div class="fach-title" style="color: var(--pastel-blue-dark);">🎒 Schulthek</div><div id="thek-list"></div></div>
         </div>
-
         <div style="text-align: right; margin-top: 20px;">
           <button class="btn btn-success" onclick="startBreakPhase()">Block beenden & zur Pause ➔</button>
         </div>
       </div>
     </div>
 
-    <!-- SCHRITT 4: PAUSE -->
+    <!-- SCHRITT 4 -->
     <div class="step" id="step-4">
       <div class="card">
         <h2>🧘 Pausen-Zeit</h2>
-        <p>Entspanne deine Augen und deinen Kopf.</p>
-
         <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 10px;">
           <button class="btn btn-secondary" onclick="setBreakTimer(5)">5 Min</button>
           <button class="btn btn-secondary" onclick="setBreakTimer(10)">10 Min</button>
         </div>
-
         <div class="timer-display" id="break-timer">05:00</div>
-
         <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 24px;">
           <button class="btn btn-main" id="break-start-btn" onclick="toggleBreakTimer()">▶ Start Pause</button>
           <button class="btn btn-rose" onclick="emergencyStop()">🛑 Notfall-Stopp</button>
         </div>
-
         <div class="step-card-active">
           <div style="font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700;">Aktuelle Pausen-Aufgabe:</div>
           <div id="break-instruction" style="font-size: 1.1rem; font-weight: 600; margin-top: 4px;">1. Stehe auf und strecke dich ausgiebig.</div>
         </div>
         <button class="btn btn-secondary" style="width: 100%; margin-bottom: 24px;" onclick="nextBreakInstruction()">Nächste Pausen-Aufgabe ➔</button>
-
         <div style="display: flex; justify-content: space-between;">
           <button class="btn btn-rose" onclick="triggerCelebration()">🏁 Lernen komplett beenden</button>
           <button class="btn btn-success" onclick="startNextStudyBlock()">Nächsten Lernblock starten ➔</button>
@@ -375,77 +352,58 @@
       </div>
     </div>
 
-    <!-- SCHRITT 5: CELEBRATION / BELOHNUNG (KONFETTI) -->
+    <!-- SCHRITT 5 -->
     <div class="step" id="step-5">
       <div class="card" style="text-align: center; padding: 50px 36px;">
         <span style="font-size: 3.5rem; display: block; margin-bottom: 10px;">🎉</span>
         <h2>Hervorragende Arbeit!</h2>
-        <p>Du hast deinen Lernblock erfolgreich gemeistert. Zeit, stolz auf dich zu sein!</p>
-
-        <div style="background: #f0fdf400; border: 1px solid #bbf7d000; padding: 20px; border-radius: var(--radius-md); margin-bottom: 24px;">
+        <p>Du hast deinen Lernblock erfolgreich gemeistert.</p>
+        <div style="margin-bottom: 24px;">
           <p style="font-size: 1.1rem; color: #163465fe; font-weight: 600;" id="session-count-text">🔥 Abgeschlossene Sessions insgesamt: 0</p>
-          <p style="font-size: 0.9rem; color: #163465c7; margin-top: 4px;">Gönn dir eine wohlverdiente Erholung.</p>
         </div>
-
         <button class="btn btn-main" style="width: 100%;" onclick="finishSessionToStart()">🔄 Neue Session starten</button>
       </div>
     </div>
 
   </div>
 
+  <!-- LINK BUTTON ZU GOOGLE GEMINI -->
+  <a href="https://gemini.google.com" target="_blank" class="gemini-link-btn">
+    🧠 Künstliche Intelligenz
+  </a>
+
   <script>
-    // Navigation (Morph Transitions)
     function goToStep(stepNumber) {
-      document.querySelectorAll('.step').forEach(step => {
-        step.classList.remove('active');
-      });
+      document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
       document.getElementById(`step-${stepNumber}`).classList.add('active');
     }
 
-    // Checkbox Logic
     function toggleCheck(element) {
       element.classList.toggle('checked');
     }
 
-    // WEB AUDIO API - Chinese Gong Effect with Echo
     function playGongSound() {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioContext();
-
-        const freqs = [130.81, 196.00, 261.63, 392.00, 523.25];
-
-        freqs.forEach((freq, index) => {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [130.81, 196.00, 261.63, 392.00, 523.25].forEach((freq, index) => {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
-
           osc.type = index % 2 === 0 ? 'sine' : 'triangle';
           osc.frequency.setValueAtTime(freq, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(freq * 0.99, ctx.currentTime + 4.0);
-
           gain.gain.setValueAtTime(0.15, ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 4.5);
-
           osc.connect(gain);
           gain.connect(ctx.destination);
-
           osc.start();
           osc.stop(ctx.currentTime + 4.5);
         });
-      } catch(e) {
-        console.log("Audio play prevented");
-      }
+      } catch(e) {}
     }
 
-    // STEP 3: STUDY TIMER
-    let studyTime = 25 * 60;
-    let studyInterval = null;
-    let studyRunning = false;
-    let studyEndTime = null;
+    let studyTime = 25 * 60, studyInterval = null, studyRunning = false, studyEndTime = null;
 
     function updateStudyDisplay() {
-      const m = Math.floor(studyTime / 60);
-      const s = studyTime % 60;
+      const m = Math.floor(studyTime / 60), s = studyTime % 60;
       document.getElementById('study-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
 
@@ -467,7 +425,6 @@
         studyRunning = true;
         btn.textContent = "⏸ Pause";
         studyEndTime = Date.now() + (studyTime * 1000);
-
         studyInterval = setInterval(() => {
           const diff = Math.round((studyEndTime - Date.now()) / 1000);
           if (diff > 0) {
@@ -484,17 +441,10 @@
       }
     }
 
-    function pauseStudyTimer() {
-      if (studyRunning) toggleStudyTimer();
-    }
+    function pauseStudyTimer() { if (studyRunning) toggleStudyTimer(); }
 
-    // BRAIN DUMP LOGIC WITH LOCALSTORAGE PERSISTENCE
     let brainItems = JSON.parse(localStorage.getItem('fokus_brain_items') || '[]');
-
-    function saveBrainItems() {
-      localStorage.setItem('fokus_brain_items', JSON.stringify(brainItems));
-    }
-
+    function saveBrainItems() { localStorage.setItem('fokus_brain_items', JSON.stringify(brainItems)); }
     function renderBrainItems() {
       const list = document.getElementById('brain-list');
       list.innerHTML = '';
@@ -505,7 +455,6 @@
         list.appendChild(li);
       });
     }
-
     function addBrainItem() {
       const input = document.getElementById('brain-input');
       if (!input.value.trim()) return;
@@ -514,20 +463,14 @@
       renderBrainItems();
       input.value = '';
     }
-
     function removeBrainItem(index) {
       brainItems.splice(index, 1);
       saveBrainItems();
       renderBrainItems();
     }
 
-    // 3-FÄCHER LOGIC WITH LOCALSTORAGE PERSISTENCE
     let tasks = JSON.parse(localStorage.getItem('fokus_tasks') || '[]');
-
-    function saveTasks() {
-      localStorage.setItem('fokus_tasks', JSON.stringify(tasks));
-    }
-
+    function saveTasks() { localStorage.setItem('fokus_tasks', JSON.stringify(tasks)); }
     function addTask() {
       const input = document.getElementById('task-input');
       if (!input.value.trim()) return;
@@ -536,25 +479,19 @@
       saveTasks();
       renderTasks();
     }
-
     function moveTask(id, targetStage) {
       tasks = tasks.map(t => t.id === id ? {...t, stage: targetStage} : t);
       saveTasks();
       renderTasks();
     }
-
     function deleteTask(id) {
       tasks = tasks.filter(t => t.id !== id);
       saveTasks();
       renderTasks();
     }
-
     function renderTasks() {
-      const f2 = document.getElementById('fach2-list');
-      const f3 = document.getElementById('fach3-list');
-      const thek = document.getElementById('thek-list');
+      const f2 = document.getElementById('fach2-list'), f3 = document.getElementById('fach3-list'), thek = document.getElementById('thek-list');
       f2.innerHTML = ''; f3.innerHTML = ''; thek.innerHTML = '';
-
       tasks.forEach(t => {
         const item = document.createElement('div');
         item.className = 'todo-item';
@@ -571,24 +508,11 @@
       });
     }
 
-    // STEP 4: BREAK LOGIC
-    let breakTime = 5 * 60;
-    let breakInterval = null;
-    let breakRunning = false;
-    const breakInstructions = [
-      "1. Stehe auf und strecke dich ausgiebig.",
-      "2. Trinke ein volles Glas kaltes Wasser.",
-      "3. Halte einen Luftballon in der Luft, ohne dass er den Boden berührt."
-    ];
+    let breakTime = 5 * 60, breakInterval = null, breakRunning = false;
+    const breakInstructions = ["1. Stehe auf und strecke dich ausgiebig.", "2. Trinke ein volles Glas kaltes Wasser.", "3. Halte einen Luftballon in der Luft."];
     let currentInstruction = 0;
 
-    function startBreakPhase() {
-      pauseStudyTimer();
-      playGongSound();
-      setBreakTimer(5);
-      goToStep(4);
-    }
-
+    function startBreakPhase() { pauseStudyTimer(); playGongSound(); setBreakTimer(5); goToStep(4); }
     function setBreakTimer(mins) {
       clearInterval(breakInterval);
       breakRunning = false;
@@ -596,13 +520,10 @@
       breakTime = mins * 60;
       updateBreakDisplay();
     }
-
     function updateBreakDisplay() {
-      const m = Math.floor(breakTime / 60);
-      const s = breakTime % 60;
+      const m = Math.floor(breakTime / 60), s = breakTime % 60;
       document.getElementById('break-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
-
     function toggleBreakTimer() {
       const btn = document.getElementById('break-start-btn');
       if (breakRunning) {
@@ -620,58 +541,33 @@
             clearInterval(breakInterval);
             breakRunning = false;
             playGongSound();
-            alert("Die Pause ist vorbei! Zeit für den nächsten Fokus-Block.");
+            alert("Die Pause ist vorbei!");
           }
         }, 1000);
       }
     }
-
     function nextBreakInstruction() {
       currentInstruction = (currentInstruction + 1) % breakInstructions.length;
       document.getElementById('break-instruction').textContent = breakInstructions[currentInstruction];
     }
-
     function emergencyStop() {
       clearInterval(breakInterval);
       breakRunning = false;
       document.getElementById('break-start-btn').textContent = "▶ Start Pause";
-      alert("Notfall-Stopp aktiviert. Atme durch, die Zeit steht.");
     }
+    function startNextStudyBlock() { resetStudyTimer(); setBreakTimer(5); goToStep(3); }
 
-    function startNextStudyBlock() {
-      resetStudyTimer();
-      setBreakTimer(5);
-      goToStep(3);
-    }
-
-    // STEP 5: CELEBRATION & KONFETTI
     function triggerCelebration() {
       clearInterval(studyInterval);
       clearInterval(breakInterval);
-
-      let totalSessions = parseInt(localStorage.getItem('fokus_sessions_count') || '0') + 1;
-      localStorage.setItem('fokus_sessions_count', totalSessions);
-
-      document.getElementById('session-count-text').innerHTML = `🔥 Abgeschlossene Sessions insgesamt: <strong>${totalSessions}</strong>`;
-
+      let total = parseInt(localStorage.getItem('fokus_sessions_count') || '0') + 1;
+      localStorage.setItem('fokus_sessions_count', total);
+      document.getElementById('session-count-text').innerHTML = `🔥 Abgeschlossene Sessions insgesamt: <strong>${total}</strong>`;
       goToStep(5);
-
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 160,
-          spread: 100,
-          origin: { x: 0.5, y: 0.5 }
-        });
-      }
+      if (typeof confetti === 'function') confetti({ particleCount: 160, spread: 100, origin: { x: 0.5, y: 0.5 } });
     }
+    function finishSessionToStart() { resetStudyTimer(); setBreakTimer(5); goToStep(1); }
 
-    function finishSessionToStart() {
-      resetStudyTimer();
-      setBreakTimer(5);
-      goToStep(1);
-    }
-
-    // INITIALISIERUNG
     updateStudyDisplay();
     updateBreakDisplay();
     renderBrainItems();
